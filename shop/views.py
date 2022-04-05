@@ -32,7 +32,19 @@ def login_view(request):
     return render(request, 'shop/login.html')
 
 def login_user(request):
-    pass
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        if not username or not password:
+            return render(request, "shop/login.html", {"error":"One of the fields was empty"})
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect("shop:index")
+        else:
+            return render(request, "shop/login.html", {"error":"Wrong username or password"})
+    else:
+        return redirect("shop:index")
 
 def home(request):
     if request.method == "GET":
