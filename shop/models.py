@@ -19,3 +19,5 @@ class Developer(models.Model):
 class Game(models.Model):
     title = models.CharField(max_length=30, null=False, blank=False, unique=False)
     price = models.FloatField(null=False, blank=False, unique=False)
+    url = models.URLField(max_length=300, null=False, blank=False, unique=True)
+    developer = models.ForeignKey(Developer, on_delete=models.CASCADE)

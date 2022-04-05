@@ -23,6 +23,16 @@ def login_view(request):
 
 def login_user(request):
     pass
+
+def home(request):
+    if request.method == "GET":
+        if request.user.is_authenticated:
+            return redirect("shop:index")
+        games = Game.objects.all()
+        return render(request, "shop/home.html", {"games":games})
+    else:
+        return HttpResponse(status=500)
+
 def create(request):
     if request.method == "POST":
         username = request.POST['username']
