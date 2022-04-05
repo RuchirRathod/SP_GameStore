@@ -116,10 +116,25 @@ def search(request):
     pass
 
 def publish_page_view(request):
-    pass
+    if request.method == "GET":
+        user = request.user
+        if not user.is_authenticated:
+            return redirect("shop:login")
+        if user.groups.filter(name="developers").count() != 0:
+            return render(request, "shop/publish_game_form.html")
+        else:
+           return redirect("shop:index")
 
 def developer_games(request):
-    pass
+    if request.method == "GET":
+        user = request.user
+        if not user.is_authenticated:
+            return redirect("shop:login")
+        if user.groups.filter(name="developers").count() != 0:
+            games = user.developer.game_set.all()
+            return render(request, "shop/developer_games.html", {"games":games})
+        else:
+           return redirect("shop:index")
 
 def edit_game(request, game_id):
     pass
