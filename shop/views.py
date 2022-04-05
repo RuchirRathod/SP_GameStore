@@ -7,12 +7,21 @@ def index(request):
     if request.method == "GET":
         return HttpResponse("Hello World!")
 
-def get_games(request):
-    if request.method == "GET":
-        game = Game.objects.all()[0]
-        return HttpResponse(str(game.title) + " Rs " + str(game.price))
-        
-def get_html(request):
-    games = ["Pacman", "GTA", "Hitman"]
-    if request.method == "GET":
-        return render(request,'shop/login.html', {"games":games})
+def signup(request):
+    if request.user.is_authenticated:
+        return redirect("shop:index")
+    return render(request, 'shop/signup.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect("shop:login")
+
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect("shop:index")
+    return render(request, 'shop/login.html')
+
+def login_user(request):
+    pass
+def create(request):
+    pass

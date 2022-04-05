@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Gameshop</title>
+    <title>GameStore</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'shop/bulma-0.6.2/css/bulma.css' %}"/>
     <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
@@ -21,7 +21,13 @@
     <div class="navbar-end">
 
         <div class="navbar-item">
-        
+          {% if request.path == "/login" %}
+            <a href="{% url 'shop:signup' %}" class="button">Signup</a>
+            {% elif request.path == "/signup"  %}
+            <a href="{% url 'shop:login' %}" class="button">Login</a>
+            {% elif request.path == "/home"  %}
+            <a href="{% url 'shop:login' %}" class="button">Login</a>
+        {% endif %}
         </div>
     </div>
 </nav>
