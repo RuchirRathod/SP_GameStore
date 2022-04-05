@@ -101,3 +101,12 @@ def developer_view(request):
 
 def search(request):
     pass
+
+def publish(request):
+    pass
+
+def developer_games(request):
+    pass
+
+def edit_game(request, game_id):
+    pass
