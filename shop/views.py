@@ -97,16 +97,35 @@ def play_game(request, game_id):
     pass
 
 def developer_view(request):
-    pass
+    if request.method == "GET":
+        user = request.user
+    if not user.is_authenticated:
+        return redirect("shop:login")
+    if user.groups.filter(name="developers").count() != 0:
+        games = Game.objects.filter(developer=user.developer.id)
+        statistics = []
+        for game in games:
+            transactions = Transaction.objects.filter(game=game.id)
+            for transaction in transactions:
+                statistics.append(transaction)
+        return render(request, "shop/developer.html", {"statistics":statistics})
+    else:
+        return redirect("shop:index")
 
 def search(request):
     pass
 
-def publish(request):
+def publish_page_view(request):
     pass
 
 def developer_games(request):
     pass
 
 def edit_game(request, game_id):
+    pass
+
+def publish_game(request):
+    pass
+
+def create_game(request):
     pass
