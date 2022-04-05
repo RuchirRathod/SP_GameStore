@@ -94,6 +94,18 @@ def create(request):
         return redirect("shop:signup")
 
 def catalog_view(request):
+    if request.method == "GET":
+        user = request.user
+        if not user.is_authenticated:
+            return redirect("shop:login")
+        if user.groups.filter(name="developers").count() != 0:
+            return redirect("shop:index")
+        games = Game.objects.all()
+        return render(request, "shop/catalog.html", {"games":games})
+    else:
+        return HttpResponse(status=500)
+
+def game_info(request, game_id):
     pass
 
 def play_game(request, game_id):
