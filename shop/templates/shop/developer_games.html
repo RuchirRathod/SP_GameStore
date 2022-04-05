@@ -11,7 +11,7 @@
                         <p class="title is-medium">{{ game.title }}</p>
                         <p class="subtitle is-small">Built by {{ game.developer }}</p>
                         <a class="button is-primary is-medium" href="{% url 'shop:editgame' game.id %}">Edit</a>
-                        <div class="title is-pulled-right">{{ game.price }}$</div>
+                        <div class="title is-pulled-right">₹{{ game.price }}</div>
                     </div>
                 </div>
             {% endfor %}
