@@ -1,11 +1,21 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from shop.models import Game, Developer, Player
+from django.contrib.auth.models import User, Group
+from shop.models import Game, Developer, Player, Transaction
 # Create your views here.
 def index(request):
     if request.method == "GET":
-        return HttpResponse("Hello World!")
+        user = request.user
+        if not request.user.is_authenticated:
+            return redirect("shop:home")
+        if user.groups.filter(name="developers").count() != 0:
+            return redirect("shop:developer")
+        transactions = Transaction.objects.filter(player=user.player.id)
+        purchased_games = []
+        for transaction in transactions:
+            purchased_games.append(transaction.game)
+        return render(request, "shop/index.html", {"user":user, "purchased_games":purchased_games})
 
 def signup(request):
     if request.user.is_authenticated:
@@ -69,4 +79,13 @@ def create(request):
         return redirect("shop:signup")
 
 def catalog_view(request):
+    pass
+
+def play_game(request, game_id):
+    pass
+
+def developer_view(request):
+    pass
+
+def search(request):
     pass
