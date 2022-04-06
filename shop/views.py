@@ -114,44 +114,26 @@ def game_info(request, game_id):
         if user.groups.filter(name="developers").count() != 0:
             return redirect("shop:index")
         game = get_object_or_404(Game, pk=game_id)
-        secret_key = "bd1b4a519511ea887bf2e85673805543"
-        pid = "testsale"
-        sid = "ShopApplication"
         amount = game.price
-        success = "http://localhost:8000/payment/success/?game_id={}".format(game_id)
-        cancel = "http://localhost:8000/payment/cancel"
-        error = "http://localhost:8000/payment/error"
-        checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid,sid,amount,secret_key)
-        digest = md5(checksumstr.encode("ascii"))
-        checksum = digest.hexdigest()
-        url = "http://payments.webcourse.niksula.hut.fi/pay/"
         transaction = Transaction.objects.filter(player=user.player.id, game=game.id)
         if transaction.count() != 0:
             return render(request, "shop/index.html", {"error": "Game already is in catalog"})
-        return render(request, "shop/game_info.html", {"game":game , "url" :url, "pid":pid, "sid":sid, "amount":amount, "success":success,"cancel":cancel, "error":error, "checksum":checksum})
+        return render(request, "shop/receipt.html", {"game":game , "amount":amount})
     else:
        return HttpResponse(status=500)
     #Secret key bd1b4a519511ea887bf2e85673805543
     #sid ShopApplication
 
-def payment_success(request):
+def payment_success(request, game_id):
     if request.method == "GET":
         user = request.user
         if not user.is_authenticated:
             return redirect("shop:login")
         if user.groups.filter(name="developers").count() != 0:
             return redirect("shop:index")
-        game_id = request.GET["game_id"]
         game = get_object_or_404(Game, pk=game_id)
-        secret_key = "bd1b4a519511ea887bf2e85673805543"
-        pid = request.GET["pid"]
-        ref = request.GET["ref"]
-        result = request.GET["result"]
-        checksum = request.GET["checksum"]
-        checksumstr = "pid={}&ref={}&result={}&token={}".format(pid, ref, result, secret_key)
-        digest = md5(checksumstr.encode("ascii"))
-        calculated_hash = digest.hexdigest()
-        if calculated_hash == checksum:
+        transaction = Transaction.objects.filter(player=user.player.id, game=game.id)
+        if transaction.count() == 0:
             Transaction.objects.create(game=game, player=user.player, paid_amount=game.price).save()
             return redirect("shop:index")
         else:
@@ -289,14 +271,15 @@ def create_game(request):
         if float_price <= 0:
             return render(request, "shop/publish_game_form.html", {"error":"Price must be more than 0"})
         # Validate URL
-        try:
-            URLValidator()(url)
-        except ValidationError:
-            return render(request, "shop/publish_game_form.html", {"error":"URL is not valid"})
-        try:
-            Game.objects.create(title=title, price=float_price, url=url, developer=developer)
-        except (ValidationError, IntegrityError) as e:
-            return render(request, "shop/publish_game_form.html", {"error":"URL is not unique"})
+        # try:
+        #     URLValidator()(url)
+        # except ValidationError:
+        #     return render(request, "shop/publish_game_form.html", {"error":"URL is not valid"})
+        # try:
+        Game.objects.create(title=title, price=float_price, url=url, developer=developer)
+        print("created")
+        # except (ValidationError, IntegrityError) as e:
+        #     return render(request, "shop/publish_game_form.html", {"error":"URL is not unique"})
 
         return redirect("shop:developer_games")
     else:

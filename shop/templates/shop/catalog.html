@@ -9,7 +9,7 @@
                     <div class="content">
                         <p class="title is-medium">{{ game.title }}</p>
                         <p class="subtitle is-small">Built by {{ game.developer }}</p>
-                        <a class="button is-info is-medium" href="{% url 'shop:game_info' game.id %}">Add to cart</a>
+                        <a class="button is-info is-medium" href="{% url 'shop:game_info' game.id %}">Buy</a>
                         <div class="title is-pulled-right">₹{{ game.price }}</div>
                     </div>
                 </div>
